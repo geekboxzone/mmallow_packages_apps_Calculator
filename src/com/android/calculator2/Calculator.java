@@ -44,6 +44,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.util.Log;
 import java.io.*;
+import android.content.ComponentName;
 
 import com.android.calculator2.CalculatorEditText.OnTextSizeChangeListener;
 import com.android.calculator2.CalculatorExpressionEvaluator.EvaluateCallback;
@@ -306,15 +307,15 @@ public class Calculator extends Activity
             reader = new BufferedReader(new FileReader(file));
             String tempString = null;
             while ((tempString = reader.readLine()) != null) {
-                Log.d(TAG, "Get wifi chip name: " + tempString);
+                Log.d("RFTestTool", "Get wifi chip name: " + tempString);
                 if (tempString.contains("AP"))
                     Vendor = "broadcom";
                 else if (tempString.contains("RTL"))
                     Vendor = "realtek";
             }
 
-            if (FWString == null) {
-                FWString = "broadcom";
+            if (Vendor == null) {
+                Vendor = "broadcom";
             }
             reader.close();
         } catch (IOException e) {
@@ -340,13 +341,16 @@ public class Calculator extends Activity
 		Intent intent=new Intent("android.intent.action.STRESSTEST");
 		this.startActivity(intent);
 	    }
-            if (mFormulaEditText.getText().toString().equals("83991907")){
+            if (mFormulaEditText.getText().toString().equals("83991907")) {
                 String vendor = getWifiVendor();
-                Intent intent;
+                Intent intent = new Intent();
+                ComponentName com;
                 if (vendor.equals("broadcom")) {
-                    intent=new Intent("android.intent.action.RFTESTTOOL");
-                    this.startActivity(intent);
+                    com = new ComponentName("com.ampak.rftesttool",
+                            "com.ampak.rftesttool.RFTestTool");
+                    intent.setComponent(com);
                 }
+                this.startActivity(intent);
             }
         }
     }
